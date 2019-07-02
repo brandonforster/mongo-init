@@ -15,13 +15,18 @@
 // main package contains the entry point for the application and the starting business logic.
 package main
 
-import "github.com/globalsign/mgo"
+import (
+	"os"
+
+	"github.com/globalsign/mgo"
+)
 
 func main() {
 	url := "localhost:27017"
 	session, err := mgo.Dial(url)
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//db=db.getSiblingDB('admin')
@@ -41,7 +46,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	////Create keystore collection
@@ -61,7 +67,8 @@ func main() {
 	}
 	err = keyStore.Insert(auth)
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	////Create Service Mapping
@@ -82,7 +89,8 @@ func main() {
 		"http://localhost:48080/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.serviceMapping.insert( { serviceName: "metadata", serviceUrl: "http://localhost:48081/" });
 	err = serviceMapping.Insert(serviceMap{
@@ -90,7 +98,8 @@ func main() {
 		"http://localhost:48081/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.serviceMapping.insert( { serviceName: "command", serviceUrl: "http://localhost:48082/" });
 	err = serviceMapping.Insert(serviceMap{
@@ -98,7 +107,8 @@ func main() {
 		"http://localhost:48082/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.serviceMapping.insert( { serviceName: "rules", serviceUrl: "http://localhost:48084/" });
 	err = serviceMapping.Insert(serviceMap{
@@ -106,7 +116,8 @@ func main() {
 		"http://localhost:48084/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.serviceMapping.insert( { serviceName: "notifications", serviceUrl: "http://localhost:48060/" });
 	err = serviceMapping.Insert(serviceMap{
@@ -114,7 +125,8 @@ func main() {
 		"http://localhost:48060/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.serviceMapping.insert( { serviceName: "logging", serviceUrl: "http://localhost:48061/" });
 	err = serviceMapping.Insert(serviceMap{
@@ -122,7 +134,8 @@ func main() {
 		"http://localhost:48061/",
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//
@@ -155,7 +168,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//db=db.getSiblingDB('metadata')
@@ -177,7 +191,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//db.createCollection("addressable");
@@ -188,7 +203,8 @@ func main() {
 	}
 	err = addressable.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//TODO unnecessary?
 	//db.addressable.createIndex({name: 1}, {unique: true});
@@ -201,7 +217,8 @@ func main() {
 	}
 	err = command.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//db.createCollection("device");
@@ -212,7 +229,8 @@ func main() {
 	}
 	err = device.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.device.createIndex({name: 1}, {unique: true});
 
@@ -224,7 +242,8 @@ func main() {
 	}
 	err = deviceManager.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.deviceManager.createIndex({name: 1}, {unique: true});
 
@@ -236,7 +255,8 @@ func main() {
 	}
 	err = deviceProfile.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.deviceProfile.createIndex({name: 1}, {unique: true});
 
@@ -248,7 +268,8 @@ func main() {
 	}
 	err = deviceReport.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.deviceReport.createIndex({name: 1}, {unique: true});
 
@@ -261,7 +282,8 @@ func main() {
 	}
 	err = deviceService.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.deviceService.createIndex({name: 1}, {unique: true});
 
@@ -274,7 +296,8 @@ func main() {
 	}
 	err = provisionWatcher.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.provisionWatcher.createIndex({name: 1}, {unique: true});
 
@@ -287,7 +310,8 @@ func main() {
 	}
 	err = schedule.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.schedule.createIndex({name: 1}, {unique: true});
 
@@ -299,7 +323,8 @@ func main() {
 	}
 	err = scheduleEvent.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.scheduleEvent.createIndex({name: 1}, {unique: true});
 	//
@@ -324,7 +349,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("event");
 	event := mgo.Collection{
@@ -334,7 +360,8 @@ func main() {
 	}
 	err = event.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//TODO what
 	//db.event.createIndex({"device": 1}, {unique: false});
@@ -347,7 +374,8 @@ func main() {
 	}
 	err = reading.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	//db.createCollection("valueDescriptor");
@@ -358,7 +386,8 @@ func main() {
 	}
 	err = valueDescriptor.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//TODO what
 	//db.reading.createIndex({"device": 1}, {unique: false});
@@ -385,7 +414,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//
 	//db=db.getSiblingDB('notifications')
@@ -407,7 +437,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("notification");
 	notification := mgo.Collection{
@@ -417,7 +448,8 @@ func main() {
 	}
 	err = notification.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("transmission");
 	transmission := mgo.Collection{
@@ -427,7 +459,8 @@ func main() {
 	}
 	err = transmission.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("subscription");
 	subscription := mgo.Collection{
@@ -437,7 +470,8 @@ func main() {
 	}
 	err = subscription.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.notification.createIndex({slug: 1}, {unique: true});
 	//db.subscription.createIndex({slug: 1}, {unique: true});
@@ -461,7 +495,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("interval");
 	interval := mgo.Collection{
@@ -471,7 +506,8 @@ func main() {
 	}
 	err = interval.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("intervalAction");
 	intervalAction := mgo.Collection{
@@ -481,7 +517,8 @@ func main() {
 	}
 	err = intervalAction.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.interval.createIndex({name: 1}, {unique: true});
 	//db.intervalAction.createIndex({name: 1}, {unique: true});
@@ -505,7 +542,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 	//db.createCollection("logEntry");
 	logEntry := mgo.Collection{
@@ -515,7 +553,8 @@ func main() {
 	}
 	err = logEntry.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		return
+		print("Exiting with error: " + err.Error())
+		os.Exit(1)
 	}
 
 	session.Close()

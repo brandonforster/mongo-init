@@ -19,13 +19,14 @@ import (
 	"os"
 
 	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 )
 
 func main() {
 	url := "localhost:27017"
 	session, err := mgo.Dial(url)
 	if err != nil {
-		print("Exiting with error: " + err.Error())
+		println("Fatal error during execution: " + err.Error())
 		os.Exit(1)
 	}
 
@@ -46,96 +47,74 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	////Create keystore collection
 	//db.createCollection("keyStore");
-	keyStore := mgo.Collection{
-		Database: &db,
-		Name: "keyStore",
-		FullName: "db.keyStore",
-	}
+	//keyStore := mgo.Collection{
+	//	Database: &db,
+	//	Name: "keyStore",
+	//	FullName: "db.keyStore",
+	//}
 	//db.keyStore.insert( { xDellAuthKey: "x-dell-auth-key", secretKey: "EDGEX_SECRET_KEY" } );
-	auth := struct {
-		xDellAuthKey string
-		secretKey string
-	} {
-		"x-dell-auth-key",
-		"EDGEX_SECRET_KEY",
-	}
-	err = keyStore.Insert(auth)
+	err = db.C("keystore").Insert(bson.D{
+		{ "xDellAuthKey", "x-dell-auth-key"},
+	    {"secretKey", "EDGEX_SECRET_KEY"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	////Create Service Mapping
 	//db.createCollection("serviceMapping");
-	serviceMapping := mgo.Collection{
-		Database: &db,
-		Name: "serviceMapping",
-		FullName: "db.ServiceMapping",
-	}
-	type serviceMap struct {
-		serviceName string
-		serviceUrl string
-	}
-
 	//db.serviceMapping.insert( { serviceName: "coredata", serviceUrl: "http://localhost:48080/" });
-	err = serviceMapping.Insert(serviceMap{
-		"coredata",
-		"http://localhost:48080/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "coredata"},
+		{"serviceUrl", "http://localhost:48080/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.serviceMapping.insert( { serviceName: "metadata", serviceUrl: "http://localhost:48081/" });
-	err = serviceMapping.Insert(serviceMap{
-		"metadata",
-		"http://localhost:48081/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "metadata"},
+		{"serviceUrl", "http://localhost:48081/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.serviceMapping.insert( { serviceName: "command", serviceUrl: "http://localhost:48082/" });
-	err = serviceMapping.Insert(serviceMap{
-		"command",
-		"http://localhost:48082/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "command"},
+		{"serviceUrl", "http://localhost:48082/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.serviceMapping.insert( { serviceName: "rules", serviceUrl: "http://localhost:48084/" });
-	err = serviceMapping.Insert(serviceMap{
-		"rules",
-		"http://localhost:48084/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "rules"},
+		{"serviceUrl", "http://localhost:48084/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.serviceMapping.insert( { serviceName: "notifications", serviceUrl: "http://localhost:48060/" });
-	err = serviceMapping.Insert(serviceMap{
-		"notifications",
-		"http://localhost:48060/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "notifications"},
+		{"serviceUrl", "http://localhost:48060/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.serviceMapping.insert( { serviceName: "logging", serviceUrl: "http://localhost:48061/" });
-	err = serviceMapping.Insert(serviceMap{
-		"logging",
-		"http://localhost:48061/",
-	})
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "logging"},
+		{"serviceUrl", "http://localhost:48061/"}})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
+	}
+	//db.serviceMapping.insert( { serviceName: "export-client", serviceUrl: "http://localhost:48071/" });
+	err = db.C("serviceMapping").Insert(bson.D{
+		{ "serviceName", "export-client"},
+		{"serviceUrl", "http://localhost:48071/"}})
+	if err != nil {
+		println("Error during execution: " + err.Error())
 	}
 
 	//
@@ -145,10 +124,23 @@ func main() {
 		Name: "admin",
 	}
 
-	// TODO what
 	//db.system.users.remove({});
+	err = db.C("system.users").DropCollection()
+	if err != nil {
+		println("Error during execution: " + err.Error())
+	}
 	//db.system.version.remove({});
+	err = db.C("system.version").DropCollection()
+	if err != nil {
+		println("Error during execution: " + err.Error())
+	}
 	//db.system.version.insert({ "_id" : "authSchema", "currentVersion" : 3 });
+	err = db.C("system.users").Insert(bson.D{{
+		"_id", "authSchema"},
+		{"currentVersion", 3}})
+	if err != nil {
+		println("Error during execution: " + err.Error())
+	}
 
 	//db=db.getSiblingDB('admin')
 
@@ -168,8 +160,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	//db=db.getSiblingDB('metadata')
@@ -184,15 +175,14 @@ func main() {
 	//]
 	//});
 	err = db.UpsertUser(&mgo.User{
-		Username: "admin",
+		Username: "meta",
 		Password: "password",
 		Roles: []mgo.Role{
 			mgo.RoleReadWrite,
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	//db.createCollection("addressable");
@@ -203,8 +193,7 @@ func main() {
 	}
 	err = addressable.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//TODO unnecessary?
 	//db.addressable.createIndex({name: 1}, {unique: true});
@@ -217,8 +206,7 @@ func main() {
 	}
 	err = command.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	//db.createCollection("device");
@@ -229,8 +217,7 @@ func main() {
 	}
 	err = device.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.device.createIndex({name: 1}, {unique: true});
 
@@ -242,8 +229,7 @@ func main() {
 	}
 	err = deviceManager.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.deviceManager.createIndex({name: 1}, {unique: true});
 
@@ -255,8 +241,7 @@ func main() {
 	}
 	err = deviceProfile.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.deviceProfile.createIndex({name: 1}, {unique: true});
 
@@ -268,8 +253,7 @@ func main() {
 	}
 	err = deviceReport.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.deviceReport.createIndex({name: 1}, {unique: true});
 
@@ -282,8 +266,7 @@ func main() {
 	}
 	err = deviceService.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.deviceService.createIndex({name: 1}, {unique: true});
 
@@ -296,8 +279,7 @@ func main() {
 	}
 	err = provisionWatcher.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.provisionWatcher.createIndex({name: 1}, {unique: true});
 
@@ -310,8 +292,7 @@ func main() {
 	}
 	err = schedule.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.schedule.createIndex({name: 1}, {unique: true});
 
@@ -323,8 +304,7 @@ func main() {
 	}
 	err = scheduleEvent.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.scheduleEvent.createIndex({name: 1}, {unique: true});
 	//
@@ -349,8 +329,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("event");
 	event := mgo.Collection{
@@ -360,8 +339,7 @@ func main() {
 	}
 	err = event.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//TODO what
 	//db.event.createIndex({"device": 1}, {unique: false});
@@ -374,8 +352,7 @@ func main() {
 	}
 	err = reading.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	//db.createCollection("valueDescriptor");
@@ -386,8 +363,7 @@ func main() {
 	}
 	err = valueDescriptor.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//TODO what
 	//db.reading.createIndex({"device": 1}, {unique: false});
@@ -414,8 +390,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//
 	//db=db.getSiblingDB('notifications')
@@ -437,8 +412,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("notification");
 	notification := mgo.Collection{
@@ -448,8 +422,7 @@ func main() {
 	}
 	err = notification.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("transmission");
 	transmission := mgo.Collection{
@@ -459,8 +432,7 @@ func main() {
 	}
 	err = transmission.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("subscription");
 	subscription := mgo.Collection{
@@ -470,8 +442,7 @@ func main() {
 	}
 	err = subscription.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.notification.createIndex({slug: 1}, {unique: true});
 	//db.subscription.createIndex({slug: 1}, {unique: true});
@@ -495,8 +466,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("interval");
 	interval := mgo.Collection{
@@ -506,8 +476,7 @@ func main() {
 	}
 	err = interval.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("intervalAction");
 	intervalAction := mgo.Collection{
@@ -517,8 +486,7 @@ func main() {
 	}
 	err = intervalAction.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.interval.createIndex({name: 1}, {unique: true});
 	//db.intervalAction.createIndex({name: 1}, {unique: true});
@@ -542,8 +510,7 @@ func main() {
 		},
 	})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 	//db.createCollection("logEntry");
 	logEntry := mgo.Collection{
@@ -553,8 +520,7 @@ func main() {
 	}
 	err = logEntry.Create(&mgo.CollectionInfo{})
 	if err != nil {
-		print("Exiting with error: " + err.Error())
-		os.Exit(1)
+		println("Error during execution: " + err.Error())
 	}
 
 	session.Close()
